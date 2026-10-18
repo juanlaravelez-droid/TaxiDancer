@@ -44,7 +44,6 @@
     loading.hidden = true;
     frame.hidden = false;
     fallback.hidden = true;
-    frame.contentWindow.postMessage({ type: 'juan-lara-booking-init' }, '*');
   }, { once: true });
   calendar.appendChild(frame);
 

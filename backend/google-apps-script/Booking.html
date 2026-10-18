@@ -115,10 +115,7 @@
     </style>
   </head>
   <body>
-    <div class="frame-access-message" id="frameAccessMessage" hidden>
-      <p>No se pudo verificar que este calendario se abrió desde el sitio autorizado. Abre la página principal o comunícate por WhatsApp.</p>
-    </div>
-    <main class="app" id="bookingApp" data-parent-origin="<?= allowedSiteOrigin ?>" hidden>
+    <main class="app" id="bookingApp">
       <header class="intro">
         <p class="eyebrow">Agenda de Juan Lara</p>
         <h1>Elige cuándo bailar</h1>
@@ -208,7 +205,6 @@
     <script>
       (() => {
         const app = document.getElementById('bookingApp');
-        const frameAccessMessage = document.getElementById('frameAccessMessage');
         const state = { year: null, month: null, availability: null, selectedDate: null, selectedTime: null, requestId: 0 };
         const monthTitle = document.getElementById('monthTitle');
         const dayGrid = document.getElementById('dayGrid');
@@ -390,25 +386,8 @@
             .bookSlot(booking);
         });
 
-        if (window.self !== window.top) {
-          const allowedOrigin = app.dataset.parentOrigin;
-          if (!allowedOrigin) {
-            frameAccessMessage.hidden = false;
-          } else {
-            window.addEventListener('message', event => {
-              if (event.source !== window.parent
-                  || event.origin !== allowedOrigin
-                  || !event.data
-                  || event.data.type !== 'juan-lara-booking-init') return;
-              app.hidden = false;
-              frameAccessMessage.hidden = true;
-              loadMonth();
-            });
-          }
-        } else {
-          app.hidden = false;
-          loadMonth();
-        }
+        app.hidden = false;
+        loadMonth();
       })();
     </script>
   </body>

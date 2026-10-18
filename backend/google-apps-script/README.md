@@ -18,7 +18,6 @@ El ID del calendario no es una contraseña, pero debe configurarse solo como pro
 2. En **Configuración del proyecto**, activa **Mostrar el archivo de manifiesto `appsscript.json` en el editor**. Copia `Code.gs` y `Booking.html` de esta carpeta al proyecto de Apps Script y reemplaza el manifiesto por `appsscript.json`.
 3. En **Configuración del proyecto → Propiedades del script**, agrega estas propiedades:
    - `BOOKING_CALENDAR_ID`: el ID que aparece en Google Calendar en **Configuración → Integrar calendario**. Usa el valor de la captura del calendario principal, no la URL pública ni la dirección iCal secreta.
-   - `BOOKING_SITE_ORIGIN`: el origen HTTPS donde está publicado el sitio, por ejemplo `https://usuario.github.io` o el dominio propio. No incluyas rutas, el nombre del repositorio ni una barra al final. Si todavía no conoces la dirección pública del sitio, espera antes de completar esta propiedad.
 4. La zona horaria que aparece en la captura de Apps Script es la de Colombia. Confirma que el calendario de destino también use **America/Bogota**.
 5. Antes de implementar, verifica que todas las citas existentes que deban bloquear horarios estén visibles en el calendario indicado por `BOOKING_CALENDAR_ID`. La aplicación no consulta automáticamente los otros calendarios visibles en tu cuenta.
 6. En **Implementar → Nueva implementación → Aplicación web**, selecciona **Ejecutar como: yo**. Para que el público pueda consultar y solicitar reservas, el acceso debe permitir a cualquier visitante. Google podría pedir autorización para administrar eventos del calendario.
@@ -33,7 +32,7 @@ Si la organización de Google Workspace no permite aplicaciones accesibles a vis
 - El servidor devuelve únicamente fechas y horas libres, nunca títulos, participantes ni descripciones de eventos existentes.
 - Las solicitudes válidas crean un evento **privado** y la confirmación indica que queda pendiente de confirmación de Juan.
 - El servidor comprueba nuevamente el horario al reservar y usa un bloqueo para evitar dos reservas simultáneas. También valida los campos, aplica una pausa breve por número de teléfono y usa un campo trampa para bots.
-- Al permitir que Google Apps Script se muestre dentro del sitio, la aplicación verifica un mensaje del origen configurado en `BOOKING_SITE_ORIGIN` antes de mostrar o consultar el calendario. En una pestaña propia funciona directamente; en una incrustación desde otro origen, no muestra la agenda.
+- La aplicación muestra la agenda tanto al abrirla directamente como al cargarla en un iframe. El acceso a sus funciones depende de los permisos de la implementación como aplicación web; no guardes secretos en los archivos públicos del sitio.
 - La aplicación es pública y crea eventos en el calendario de su propietario. No guardes secretos en el HTML o JavaScript del sitio. Para una publicación con mayor riesgo de abuso, añade un CAPTCHA y monitoriza los registros de Apps Script.
 - La duración de reserva actualmente es fija en 60 minutos. Si necesitas duraciones distintas, confirma la regla comercial antes de cambiar el código.
 

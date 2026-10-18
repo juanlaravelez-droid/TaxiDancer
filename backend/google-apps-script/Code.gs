@@ -11,22 +11,9 @@ const BOOKING = Object.freeze({
 
 function doGet() {
   const template = HtmlService.createTemplateFromFile('Booking');
-  template.allowedSiteOrigin = getAllowedSiteOrigin_();
   return template.evaluate()
     .setTitle('Reservas de baile · Juan Lara')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-}
-
-function getAllowedSiteOrigin_() {
-  const configuredOrigin = PropertiesService.getScriptProperties()
-    .getProperty('BOOKING_SITE_ORIGIN');
-  if (!configuredOrigin) return '';
-
-  const origin = configuredOrigin.trim();
-  if (!/^https:\/\/[a-z0-9.-]+$/i.test(origin)) {
-    throw new Error('BOOKING_SITE_ORIGIN debe ser el origen HTTPS exacto del sitio, sin rutas ni parámetros.');
-  }
-  return origin.toLowerCase();
 }
 
 function getMonthAvailability(year, month) {
