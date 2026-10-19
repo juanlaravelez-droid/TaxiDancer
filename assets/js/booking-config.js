@@ -1,1 +1,1 @@
-window.BOOKING_APP_URL = 'https://script.google.com/macros/s/AKfycbxDUzzqt2GB1Pc8_v0Zu-vRn90C8ho2tBw8wGYUtwpcDKFVoxie9Q5t7faCp-wu8ALh/exec';
+window.BOOKING_APP_URL = 'https://script.google.com/macros/s/AKfycbzVk4fSt5SA9gfNC9B3_YbASXDpeIZjItW2B1OFNizaWANTFcD_Xy50Fh4serpKemsd/exec';
