@@ -2,8 +2,8 @@ const BOOKING = Object.freeze({
   calendarProperty: 'BOOKING_CALENDAR_ID',
   openHour: 9,
   closeHour: 21,
-  slotMinutes: 60,
-  minimumNoticeHours: 2,
+  minimumDurationHours: 2,
+  minimumNoticeHours: 0,
   bookingWindowDays: 120,
   workingDays: [1, 2, 3, 4, 5, 6],
   timezone: 'America/Bogota'
@@ -53,17 +53,27 @@ function getMonthAvailability(year, month) {
     if (!BOOKING.workingDays.includes(dayStart.getDay())) continue;
 
     const slots = [];
-    for (let hour = BOOKING.openHour; hour + BOOKING.slotMinutes / 60 <= BOOKING.closeHour; hour += 1) {
+    for (let hour = BOOKING.openHour; hour + BOOKING.minimumDurationHours <= BOOKING.closeHour; hour += 1) {
       const start = makeDate_(requestedYear, requestedMonth, day, hour, 0);
-      const end = new Date(start.getTime() + BOOKING.slotMinutes * 60 * 1000);
       if (start.getTime() < now.getTime() + BOOKING.minimumNoticeHours * 60 * 60 * 1000) continue;
       if (start.getTime() > now.getTime() + BOOKING.bookingWindowDays * 24 * 60 * 60 * 1000) continue;
 
-      const hasConflict = events.some(event =>
-        start.getTime() < event.getEndTime().getTime()
-        && end.getTime() > event.getStartTime().getTime()
-      );
-      if (!hasConflict) slots.push(Utilities.formatDate(start, timezone, 'HH:mm'));
+      let maxDurationHours = 0;
+      for (let durationHours = 1; hour + durationHours <= BOOKING.closeHour; durationHours += 1) {
+        const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000);
+        const hasConflict = events.some(event =>
+          start.getTime() < event.getEndTime().getTime()
+          && end.getTime() > event.getStartTime().getTime()
+        );
+        if (hasConflict) break;
+        maxDurationHours = durationHours;
+      }
+      if (maxDurationHours >= BOOKING.minimumDurationHours) {
+        slots.push({
+          time: Utilities.formatDate(start, timezone, 'HH:mm'),
+          maxDurationHours: maxDurationHours
+        });
+      }
     }
 
     if (slots.length > 0) slotsByDate[date] = slots;
@@ -100,6 +110,10 @@ function bookSlot(booking) {
   const details = cleanText_(booking.details, 500, '');
   const date = String(booking.date || '');
   const time = String(booking.time || '');
+  const durationHours = Number(booking.durationHours);
+  if (!Number.isInteger(durationHours) || durationHours < BOOKING.minimumDurationHours) {
+    throw new Error('La duración mínima de la reserva es de 2 horas.');
+  }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^(?:[01]\d|2[0-3]):00$/.test(time)) {
     throw new Error('La fecha o el horario seleccionado no son válidos.');
   }
@@ -117,13 +131,13 @@ function bookSlot(booking) {
     throw new Error('La fecha o el horario seleccionado no son válidos.');
   }
 
-  const end = new Date(start.getTime() + BOOKING.slotMinutes * 60 * 1000);
+  const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000);
   const startHour = Number(time.slice(0, 2));
   const now = new Date();
   const maximumDate = now.getTime() + BOOKING.bookingWindowDays * 24 * 60 * 60 * 1000;
   if (!BOOKING.workingDays.includes(start.getDay())
       || startHour < BOOKING.openHour
-      || startHour + BOOKING.slotMinutes / 60 > BOOKING.closeHour
+      || startHour + durationHours > BOOKING.closeHour
       || start.getTime() < now.getTime() + BOOKING.minimumNoticeHours * 60 * 60 * 1000
       || start.getTime() > maximumDate) {
     throw new Error('Ese horario no está dentro del periodo disponible para reservar.');
@@ -154,12 +168,13 @@ function bookSlot(booking) {
       'Nombre: ' + name,
       'WhatsApp: ' + phone,
       'Correo electrónico: ' + email,
+      'Duración: ' + durationHours + ' horas',
       eventType ? 'Tipo de evento: ' + eventType : '',
       rhythm ? 'Ritmo preferido: ' + rhythm : '',
       details ? 'Detalles: ' + details : ''
     ].filter(Boolean).join('\n');
 
-    calendar.createEvent('Reserva de baile · ' + name, start, end, {
+    calendar.createEvent('Reserva de baile · ' + name + ' (' + durationHours + ' h)', start, end, {
       description: description,
       visibility: CalendarApp.Visibility.PRIVATE
     });
@@ -171,6 +186,7 @@ function bookSlot(booking) {
   return {
     date: Utilities.formatDate(start, timezone, 'yyyy-MM-dd'),
     time: Utilities.formatDate(start, timezone, 'HH:mm'),
+    durationHours: durationHours,
     message: 'Solicitud registrada en la agenda. Juan se pondrá en contacto contigo para confirmar.'
   };
 }

@@ -119,7 +119,7 @@
       <header class="intro">
         <p class="eyebrow">Agenda de Juan Lara</p>
         <h1>Elige cuándo bailar</h1>
-        <p class="intro-copy">Selecciona una fecha disponible y envía una solicitud. La reserva queda pendiente hasta que Juan la confirme contigo.</p>
+        <p class="intro-copy">Selecciona una fecha y una hora disponible, elige una duración mínima de 2 horas y envía tu solicitud. La reserva queda pendiente hasta que Juan la confirme contigo.</p>
       </header>
 
       <section class="calendar-panel" aria-label="Calendario de disponibilidad">
@@ -185,6 +185,10 @@
               <option>Combinación de ritmos</option>
             </select>
           </div>
+          <div class="field">
+            <label for="durationHours">Duración (mínimo 2 horas)</label>
+            <select id="durationHours" name="durationHours" required></select>
+          </div>
           <div class="field full">
             <label for="details">Detalles del evento (opcional)</label>
             <textarea id="details" name="details" maxlength="500" placeholder="Ciudad, lugar o algún detalle que debamos coordinar."></textarea>
@@ -197,7 +201,7 @@
             <button class="submit-button" id="submitButton" type="submit">Enviar solicitud de reserva</button>
           </div>
         </div>
-        <p class="form-note">Al enviar, se crea un evento privado de 60 minutos en la agenda. Juan se pondrá en contacto contigo para confirmar la solicitud.</p>
+        <p class="form-note">Elige una duración mínima de 2 horas. La solicitud crea un evento privado en la agenda y queda pendiente de confirmación.</p>
       </form>
       <div class="confirmation" id="confirmation" role="status" hidden></div>
     </main>
@@ -205,7 +209,7 @@
     <script>
       (() => {
         const app = document.getElementById('bookingApp');
-        const state = { year: null, month: null, availability: null, selectedDate: null, selectedTime: null, requestId: 0 };
+        const state = { year: null, month: null, availability: null, selectedDate: null, selectedTime: null, maxDurationHours: 0, requestId: 0 };
         const monthTitle = document.getElementById('monthTitle');
         const dayGrid = document.getElementById('dayGrid');
         const slotList = document.getElementById('slotList');
@@ -215,6 +219,7 @@
         const form = document.getElementById('bookingForm');
         const submitButton = document.getElementById('submitButton');
         const confirmation = document.getElementById('confirmation');
+        const durationSelect = document.getElementById('durationHours');
         const monthFormatter = new Intl.DateTimeFormat('es-CO', { month: 'long', year: 'numeric' });
         const dateFormatter = new Intl.DateTimeFormat('es-CO', { weekday: 'long', day: 'numeric', month: 'long' });
         const now = new Date();
@@ -244,6 +249,7 @@
           const requestId = ++state.requestId;
           state.selectedDate = null;
           state.selectedTime = null;
+          state.maxDurationHours = 0;
           form.hidden = true;
           dayGrid.replaceChildren();
           slotList.replaceChildren();
@@ -307,28 +313,44 @@
           selectedDateTitle.textContent = dateFormatter.format(localDate(state.year, state.month, Number(date.slice(-2))));
           slotList.replaceChildren();
 
-          (state.availability.slotsByDate[date] || []).forEach(time => {
+          (state.availability.slotsByDate[date] || []).forEach(slot => {
             const button = document.createElement('button');
             button.type = 'button';
             button.className = 'slot-button';
-            button.textContent = time;
+            button.textContent = slot.time;
             button.setAttribute('aria-pressed', 'false');
-            button.addEventListener('click', () => selectTime(time, button));
+            button.addEventListener('click', () => selectTime(slot, button));
             slotList.appendChild(button);
           });
-          setStatus('Elige un horario de 60 minutos.');
+          setStatus('Elige una hora de inicio. Cada reserva dura mínimo 2 horas.');
         }
 
-        function selectTime(time, selectedButton) {
-          state.selectedTime = time;
+        function selectTime(slot, selectedButton) {
+          state.selectedTime = slot.time;
+          state.maxDurationHours = slot.maxDurationHours;
           slotList.querySelectorAll('.slot-button').forEach(button => button.setAttribute('aria-pressed', 'false'));
           selectedButton.setAttribute('aria-pressed', 'true');
-          document.getElementById('selectedSlot').textContent =
-            `${dateFormatter.format(localDate(state.year, state.month, Number(state.selectedDate.slice(-2))))} · ${time} · ${state.availability.timezone}`;
+          durationSelect.replaceChildren();
+          for (let hours = 2; hours <= state.maxDurationHours; hours += 1) {
+            const option = document.createElement('option');
+            option.value = String(hours);
+            option.textContent = `${hours} ${hours === 1 ? 'hora' : 'horas'}`;
+            durationSelect.appendChild(option);
+          }
+          durationSelect.value = '2';
+          updateSelectedSlot();
           form.hidden = false;
           form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           document.getElementById('name').focus({ preventScroll: true });
         }
+
+        function updateSelectedSlot() {
+          const dateLabel = dateFormatter.format(localDate(state.year, state.month, Number(state.selectedDate.slice(-2))));
+          document.getElementById('selectedSlot').textContent =
+            `${dateLabel} · ${state.selectedTime} · ${durationSelect.value} horas · ${state.availability.timezone}`;
+        }
+
+        durationSelect.addEventListener('change', updateSelectedSlot);
 
         document.getElementById('previousMonth').addEventListener('click', () => {
           confirmation.hidden = true;
@@ -357,6 +379,7 @@
             email: values.get('email'),
             eventType: values.get('eventType'),
             rhythm: values.get('rhythm'),
+            durationHours: values.get('durationHours'),
             details: values.get('details'),
             website: values.get('website'),
             date: state.selectedDate,
@@ -373,7 +396,7 @@
               submitButton.disabled = false;
               submitButton.textContent = 'Enviar solicitud de reserva';
               form.hidden = true;
-              confirmation.textContent = `${result.message} ${dateFormatter.format(localDate(year, month, day))}, ${result.time}.`;
+              confirmation.textContent = `${result.message} ${dateFormatter.format(localDate(year, month, day))}, ${result.time}, durante ${result.durationHours} horas.`;
               confirmation.hidden = false;
               setStatus('Solicitud enviada.');
               loadMonth();

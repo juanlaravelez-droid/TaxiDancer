@@ -4,7 +4,7 @@ Este backend de Google Apps Script sirve una agenda personalizada y crea eventos
 
 ## Antes de publicar
 
-`Code.gs` está configurado con el horario que ya aparece en el sitio: lunes a sábado, de 9:00 a. m. a 9:00 p. m., en `America/Bogota`. Cada espacio bloquea 60 minutos, se exige una anticipación mínima de 2 horas y se muestran fechas hasta 120 días adelante. Confirma que esas reglas representan el servicio real antes de desplegar. Se ajustan al inicio de `Code.gs`.
+`Code.gs` está configurado con el horario que ya aparece en el sitio: lunes a sábado, de 9:00 a. m. a 9:00 p. m., en `America/Bogota`. Cada reserva debe durar al menos 2 horas; se pueden seleccionar duraciones mayores en incrementos de una hora hasta el cierre. No se exige anticipación mínima y se muestran fechas hasta 120 días adelante. Confirma que esas reglas representan el servicio real antes de desplegar. Se ajustan al inicio de `Code.gs`.
 
 La captura de configuración compartida confirma el ID del calendario principal. Ese ID puede usarse para que esta aplicación consulte disponibilidad y guarde reservas en el calendario principal, siempre que la cuenta propietaria autorice Apps Script.
 
@@ -23,7 +23,7 @@ El ID del calendario no es una contraseña, pero debe configurarse solo como pro
 6. En **Implementar → Nueva implementación → Aplicación web**, selecciona **Ejecutar como: yo**. Para que el público pueda consultar y solicitar reservas, el acceso debe permitir a cualquier visitante. Google podría pedir autorización para administrar eventos del calendario.
 7. Implementa y copia la URL terminada en `/exec`.
 8. Pega esa URL en `window.BOOKING_APP_URL` dentro de `assets/js/booking-config.js` y publica el cambio del sitio estático.
-9. Prueba una fecha libre, intenta reservarla dos veces y verifica que aparezca un evento privado de 60 minutos en el calendario seleccionado. Comprueba también que un evento existente impida reservar ese horario.
+9. Prueba una fecha libre, solicita reservas de 2 horas y de más duración, e intenta reservar un horario ocupado. Verifica que los eventos privados tengan la duración elegida y que un evento existente impida reservar un intervalo que se cruce con él.
 
 Si la organización de Google Workspace no permite aplicaciones accesibles a visitantes, solicita al administrador que autorice esta implementación. Hasta conectar y publicar la aplicación, el sitio conserva un enlace y la agenda de citas de Google existente como alternativa.
 
@@ -34,6 +34,6 @@ Si la organización de Google Workspace no permite aplicaciones accesibles a vis
 - El servidor comprueba nuevamente el horario al reservar y usa un bloqueo para evitar dos reservas simultáneas. También valida los campos, aplica una pausa breve por número de teléfono y usa un campo trampa para bots.
 - La aplicación muestra la agenda tanto al abrirla directamente como al cargarla en un iframe. El acceso a sus funciones depende de los permisos de la implementación como aplicación web; no guardes secretos en los archivos públicos del sitio.
 - La aplicación es pública y crea eventos en el calendario de su propietario. No guardes secretos en el HTML o JavaScript del sitio. Para una publicación con mayor riesgo de abuso, añade un CAPTCHA y monitoriza los registros de Apps Script.
-- La duración de reserva actualmente es fija en 60 minutos. Si necesitas duraciones distintas, confirma la regla comercial antes de cambiar el código.
+- La duración mínima es de 2 horas. La persona que reserva puede elegir más tiempo, en incrementos de una hora, hasta el cierre de la jornada.
 
 La implementación de Apps Script se despliega por separado del sitio estático; el código fuente permanece versionado en esta carpeta. La URL `/exec` es un identificador de despliegue, no una credencial de acceso al calendario.
