@@ -48,9 +48,14 @@
         `📍 Ciudad: ${value('ciudad') || 'Por definir'}`,
         `📝 Detalles: ${value('detalles') || 'Sin detalles adicionales'}`
       ].join('\n');
-      const whatsappUrl = `https://wa.me/573206548796?text=${encodeURIComponent(message)}`;
+      const whatsappUrl = new URL('https://wa.me/573206548796');
+      whatsappUrl.searchParams.set('text', message);
+      whatsappUrl.searchParams.set('utm_source', 'website');
+      whatsappUrl.searchParams.set('utm_medium', 'whatsapp');
+      whatsappUrl.searchParams.set('utm_campaign', 'booking');
+      whatsappUrl.searchParams.set('utm_content', 'contact_form');
 
-      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+      window.open(whatsappUrl.href, '_blank', 'noopener,noreferrer');
       if (toast) {
         toast.classList.add('show');
         window.clearTimeout(toastTimeout);

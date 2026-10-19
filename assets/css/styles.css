@@ -387,7 +387,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 56px;display:fl
 .srv-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);transform:scaleX(0);transition:transform .4s}
 .srv-card:hover::before{transform:scaleX(1)}
 .srv-icon{font-size:34px;margin-bottom:18px;display:block;opacity:.85}
-.srv-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ivory);margin-bottom:10px}
+.srv-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ivory);margin:0 0 10px}
 .srv-desc{font-size:10.5px;line-height:1.95;color:var(--muted);letter-spacing:.3px}
 .srv-tag{display:inline-block;margin-top:16px;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim);border:1px solid rgba(196,150,74,.2);padding:4px 10px}
 
@@ -399,7 +399,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 56px;display:fl
 .ritmo-item::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:var(--gold-dim);transition:all .4s}
 .ritmo-item:hover::after{left:0;right:0}
 .ritmo-emoji{font-size:30px;margin-bottom:14px;display:block;opacity:.8}
-.ritmo-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--ivory);margin-bottom:8px}
+.ritmo-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--ivory);margin:0 0 8px}
+.faq-list{max-width:860px;margin:0 auto;display:grid;gap:24px}
+.faq-list article{padding-bottom:24px;border-bottom:1px solid var(--border-lt)}
+.faq-list h3{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--ivory);margin:0 0 8px}
 .ritmo-desc{font-size:9.5px;color:var(--muted);line-height:1.8;letter-spacing:.3px}
 
 /* BOOKING */
