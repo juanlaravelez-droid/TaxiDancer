@@ -412,23 +412,25 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 56px;display:fl
 /* BOOKING */
 .booking-section{padding:96px 64px;position:relative;overflow:hidden}
 .booking-section::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 24px,rgba(196,150,74,.018) 24px,rgba(196,150,74,.018) 25px)}
-.booking-inner{max-width:980px;margin:0 auto;position:relative;z-index:1}
-.booking-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:60px;margin-top:56px;align-items:start}
-.cal-wrap{background:var(--charcoal);border:1px solid var(--border);display:flex;flex-direction:column}
-.cal-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-dim);padding:14px 18px;border-bottom:1px solid var(--border-lt);display:flex;align-items:center;gap:8px}
-.booking-calendar{padding:18px}
-.calendar-intro p{margin-bottom:14px;color:var(--muted-lt);font-size:11px;line-height:1.8}
-.calendar-loading{padding:28px 12px;color:var(--muted-lt);font-size:12px;text-align:center}
-.frame-access-message{padding:22px;color:var(--muted-lt);font-size:12px;line-height:1.8}
-.frame-access-message p{margin:0}
-.calendar-fallback{padding:18px;background:var(--coal);border:1px solid var(--border-lt)}
-.calendar-fallback p{color:var(--muted-lt);font-size:11px;line-height:1.7}
-.calendar-fallback-link{display:inline-block;margin:0 0 16px;color:var(--gold-lt);font-size:11px;line-height:1.6}
-.calendar-google-link{display:inline-block;margin:0 18px 14px;color:var(--gold-lt);font-size:10px;line-height:1.6;text-decoration:underline;text-underline-offset:3px}
-.cal-frame{width:100%;height:520px;border:1px solid var(--border-lt);display:block;background:var(--black)}
-.custom-calendar-frame{width:100%;height:860px;border:1px solid var(--border-lt);display:block;background:var(--black)}
-.custom-calendar-frame[hidden]{display:none}
-.cal-note{font-size:9px;color:var(--muted);padding:11px 16px;border-top:1px solid var(--border-lt);letter-spacing:.4px;line-height:1.6}
+.booking-inner{max-width:820px;margin:0 auto;position:relative;z-index:1}
+.booking-section .section-head{text-align:center;margin-bottom:32px}
+.booking-section .section-intro{max-width:540px}
+.booking-options{max-width:620px;margin:0 auto;text-align:center}
+.booking-whatsapp{display:flex;align-items:center;gap:16px;padding:22px 24px;background:var(--gold);color:var(--black);text-align:left;text-decoration:none;transition:background .2s,transform .2s}
+.booking-whatsapp:hover{background:var(--gold-lt);transform:translateY(-2px)}
+.booking-whatsapp .wa-icon{width:38px;height:38px;font-size:18px}
+.booking-whatsapp strong,.booking-whatsapp small{display:block}
+.booking-whatsapp strong{font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.booking-whatsapp small{margin-top:7px;font-size:11px;letter-spacing:.02em;line-height:1.6}
+.booking-arrow{margin-left:auto;font-size:24px}
+.booking-note{margin:14px 0 20px;color:var(--muted);font-size:10px;letter-spacing:.08em}
+.booking-calendar-link{color:var(--gold-lt);font-size:10px;letter-spacing:.06em;text-underline-offset:4px}
+.booking-details{margin-top:32px;border-top:1px solid var(--border-lt);text-align:left}
+.booking-details summary{padding:18px 0;color:var(--muted-lt);font-size:11px;letter-spacing:.06em;cursor:pointer;list-style:none}
+.booking-details summary::-webkit-details-marker{display:none}
+.booking-details summary::after{content:"+";float:right;color:var(--gold);font-size:16px}
+.booking-details[open] summary::after{content:"−"}
+.booking-details[open] .form-head{margin-top:8px}
 .form-head{margin-bottom:28px}
 .form-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--ivory);margin-bottom:5px}
 .form-sub{font-size:10px;color:var(--muted);letter-spacing:1px}
@@ -443,10 +445,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 56px;display:fl
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .btn-submit{width:100%;background:var(--gold);border:none;color:var(--black);font-family:'Josefin Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;font-weight:600;padding:15px;margin-top:8px;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px}
 .btn-submit:hover{background:var(--gold-lt);transform:translateY(-2px)}
-.form-divider{text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:18px 0 14px;position:relative}
-.form-divider::before,.form-divider::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:var(--border-lt)}
-.form-divider::before{left:0}.form-divider::after{right:0}
-
 /* WA BTN */
 .wa-btn{display:inline-flex;align-items:center;gap:12px;background:#112A1A;border:1px solid #25D366;color:#25D366;text-decoration:none;padding:16px 28px;font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:600;transition:all .25s}
 .wa-btn:hover{background:#25D366;color:var(--black);transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,211,102,.22)}
@@ -545,7 +543,6 @@ footer{background:var(--coal);border-top:1px solid var(--border-lt);padding:36px
   .ritmos-section{padding:64px 24px}
   .ritmos-list{grid-template-columns:1fr 1fr}
   .booking-section{padding:64px 24px}
-  .booking-grid{grid-template-columns:minmax(0,1fr);gap:40px}
   .audience-section,.process-section{padding:72px 24px}
   .audience-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .process-list{grid-template-columns:1fr}
@@ -553,9 +550,6 @@ footer{background:var(--coal);border-top:1px solid var(--border-lt);padding:36px
   .contact-section{grid-template-columns:minmax(0,1fr);padding:64px 24px;gap:52px}
   .contact-section>*{min-width:0}
   footer{flex-direction:column;gap:18px;text-align:center;padding:28px 22px}
-}
-@media(max-width:1100px){
-  .booking-grid{grid-template-columns:minmax(0,1fr);gap:40px}
 }
 @media(max-width:1200px){
   .servicios-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -565,8 +559,12 @@ footer{background:var(--coal);border-top:1px solid var(--border-lt);padding:36px
   .ritmos-list{grid-template-columns:1fr 1fr}
   .form-row{grid-template-columns:1fr}
   .hero-stats{flex-wrap:wrap;gap:22px}
-  .custom-calendar-frame{height:1120px}
-  .cal-frame{height:560px}
+  .booking-section{padding:64px 20px}
+  .booking-whatsapp{gap:12px;padding:18px 16px}
+  .booking-whatsapp strong{font-size:10px;letter-spacing:.08em}
+  .booking-whatsapp small{font-size:10px}
+  .booking-arrow{font-size:20px}
+  .booking-calendar-link{line-height:1.8}
   .hero-eyebrow{font-size:8px;letter-spacing:3px}
   .hero-desc{margin-bottom:28px}
   .audience-section,.process-section{padding:64px 20px}

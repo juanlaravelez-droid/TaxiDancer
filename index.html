@@ -354,40 +354,21 @@
 <section id="reservas" class="booking-section">
   <div class="booking-inner">
     <div class="section-head">
-      <span class="section-eyebrow">Agenda tu evento</span>
-      <h2 class="section-title">Solicitar <em>Fecha</em></h2>
+      <span class="section-eyebrow">Un primer mensaje es suficiente</span>
+      <h2 class="section-title">Hablemos de <em>tu fecha</em></h2>
+      <p class="section-intro">Cuéntame cuándo y dónde es tu evento. Revisamos disponibilidad y acordamos los detalles por WhatsApp.</p>
       <div class="section-rule"></div>
     </div>
-    <div class="booking-grid">
-
-      <!-- Calendario conectado a Google Calendar -->
-      <div class="cal-wrap">
-        <div class="cal-label"><span aria-hidden="true">📅</span> &nbsp;Consulta disponibilidad y reserva</div>
-        <div class="booking-calendar" id="bookingCalendar">
-          <div class="calendar-intro">
-            <p>Elige una fecha y un horario. Las reservas son de mínimo 2 horas y se confirman cuando recibas respuesta.</p>
-          </div>
-          <div class="calendar-loading" role="status">Cargando calendario…</div>
-          <div class="calendar-fallback" id="googleCalendarFallback" hidden>
-            <p>Mientras se conecta la agenda personalizada, puedes revisar disponibilidad y reservar directamente en Google Calendar.</p>
-            <a class="calendar-fallback-link" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3mJutW1KZ62diyRad_N7xdenuQBncIcFxVbn9Ezw4ErZGJ3u56DSpET41fMTkWFISjj8VTY_wZ?gv=true" target="_blank" rel="noopener noreferrer">Ver disponibilidad en Google Calendar</a>
-            <iframe
-              id="googleCalendarFallbackFrame"
-              src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3mJutW1KZ62diyRad_N7xdenuQBncIcFxVbn9Ezw4ErZGJ3u56DSpET41fMTkWFISjj8VTY_wZ?gv=true"
-              title="Agenda alternativa de Google Calendar"
-              loading="lazy"
-              class="cal-frame"
-            ></iframe>
-          </div>
-        </div>
-        <a class="calendar-google-link" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3mJutW1KZ62diyRad_N7xdenuQBncIcFxVbn9Ezw4ErZGJ3u56DSpET41fMTkWFISjj8VTY_wZ?gv=true" target="_blank" rel="noopener noreferrer">Prefiero reservar en Google Calendar</a>
-        <div class="cal-note">
-          Mientras se conecta la agenda personalizada, puedes usar la agenda de citas de Google como alternativa.
-        </div>
-      </div>
-
-      <!-- Formulario -->
-      <div>
+    <div class="booking-options">
+      <a class="booking-whatsapp" href="https://wa.me/573206548796?text=Hola%2C%20quiero%20consultar%20disponibilidad%20para%20un%20evento.%20La%20fecha%20es%3A%20%20y%20el%20lugar%3A%20" target="_blank" rel="noopener noreferrer">
+        <span class="wa-icon" aria-hidden="true">💬</span>
+        <span><strong>Consultar disponibilidad por WhatsApp</strong><small>La fecha, el lugar y el tipo de evento son suficientes para empezar.</small></span>
+        <span class="booking-arrow" aria-hidden="true">→</span>
+      </a>
+      <p class="booking-note">Atención en Medellín · Reservas con mínimo 2 horas</p>
+      <a class="booking-calendar-link" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3mJutW1KZ62diyRad_N7xdenuQBncIcFxVbn9Ezw4ErZGJ3u56DSpET41fMTkWFISjj8VTY_wZ?gv=true" target="_blank" rel="noopener noreferrer">¿Prefieres reservar directamente? Ver agenda de citas</a>
+      <details class="booking-details">
+        <summary>Prefiero enviar una solicitud detallada</summary>
         <div class="form-head">
           <div class="form-title">Cuéntame tu evento</div>
           <div class="form-sub">Respondo en menos de 24 horas</div>
@@ -441,14 +422,7 @@
           </div>
           <button type="submit" class="btn-submit">✦ Enviar solicitud</button>
         </form>
-        <div class="form-divider">o escríbeme directo</div>
-        <a class="wa-btn" style="width:100%;justify-content:center;"
-           href="https://wa.me/573206548796?text=Hola%21%20Vi%20tu%20p%C3%A1gina%20y%20quiero%20consultar%20un%20acompa%C3%B1amiento%20de%20baile.&amp;utm_source=website&amp;utm_medium=whatsapp&amp;utm_campaign=booking&amp;utm_content=booking_section"
-           target="_blank" rel="noopener">
-          <div class="wa-icon">💬</div>
-          WhatsApp · +57 320 654 8796
-        </a>
-      </div>
+      </details>
     </div>
   </div>
 </section>
@@ -565,7 +539,5 @@
 
 <script src="assets/js/main.js" defer></script>
 <script src="assets/js/carousel.js" defer></script>
-<script src="assets/js/booking-config.js" defer></script>
-<script src="assets/js/booking-calendar.js" defer></script>
 </body>
 </html>
