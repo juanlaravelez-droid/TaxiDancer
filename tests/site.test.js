@@ -115,6 +115,56 @@ function createCarousel() {
   return { elements, intervals };
 }
 
+function createBookingContext() {
+  const createdEvents = [];
+  const cacheValues = new Map();
+  const calendar = {
+    getTimeZone: () => 'America/Bogota',
+    getEvents: () => [],
+    createEvent: (title, start, end, options) => {
+      createdEvents.push({ title, start, end, options });
+    }
+  };
+  const utilities = {
+    formatDate: (date, timezone, pattern) => {
+      const year = String(date.getFullYear()).padStart(4, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hour = String(date.getHours()).padStart(2, '0');
+      const minute = String(date.getMinutes()).padStart(2, '0');
+      if (pattern === 'HH:mm') return `${hour}:${minute}`;
+      if (pattern === 'yyyy-MM-dd HH:mm') return `${year}-${month}-${day} ${hour}:${minute}`;
+      return `${year}-${month}-${day}`;
+    },
+    parseDate: (dateTime, timezone, pattern) => new Date(`${dateTime.replace(' ', 'T')}:00`),
+    computeDigest: () => [1],
+    base64EncodeWebSafe: () => 'phone-hash',
+    DigestAlgorithm: { SHA_256: 'SHA_256' }
+  };
+  const sandbox = {
+    Date,
+    Utilities: utilities,
+    PropertiesService: {
+      getScriptProperties: () => ({ getProperty: () => 'test-calendar' })
+    },
+    CalendarApp: {
+      getCalendarById: () => calendar,
+      Visibility: { PRIVATE: 'private' }
+    },
+    CacheService: {
+      getScriptCache: () => ({
+        get: key => cacheValues.get(key) || null,
+        put: (key, value) => cacheValues.set(key, value)
+      })
+    },
+    LockService: {
+      getScriptLock: () => ({ tryLock: () => true, releaseLock() {} })
+    }
+  };
+  runScript('backend/google-apps-script/Code.gs', sandbox);
+  return { sandbox, createdEvents };
+}
+
 test('contact form opens a WhatsApp message with form values and defaults', () => {
   const form = new FakeElement();
   form.values = {
@@ -220,4 +270,75 @@ test('carousel playback button pauses and resumes automatic rotation', () => {
   assert.equal(iconPlay.hidden, true);
   assert.equal(iconPause.hidden, false);
   assert.equal(btnPlay.attributes['aria-label'], 'Pausar presentación');
+});
+
+test('booking availability runs Monday through Saturday and closes at midnight', () => {
+  const { sandbox } = createBookingContext();
+  const now = new Date();
+  const monthDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const availability = sandbox.getMonthAvailability(
+    monthDate.getFullYear(),
+    monthDate.getMonth() + 1
+  );
+  const dates = Object.keys(availability.slotsByDate);
+
+  assert.ok(dates.length > 0);
+  for (const date of dates) {
+    const [year, month, day] = date.split('-').map(Number);
+    const weekday = new Date(year, month - 1, day).getDay();
+    assert.ok([1, 2, 3, 4, 5, 6].includes(weekday));
+    const slots = availability.slotsByDate[date];
+    assert.deepEqual(Array.from(slots, slot => slot.time), ['19:00', '20:00', '21:00', '22:00']);
+    assert.deepEqual(Array.from(slots, slot => slot.maxDurationHours), [5, 4, 3, 2]);
+  }
+});
+
+test('booking accepts a reservation ending at midnight and rejects out-of-hours requests', () => {
+  const { sandbox, createdEvents } = createBookingContext();
+  const monday = new Date();
+  monday.setDate(monday.getDate() + 1);
+  while (monday.getDay() !== 1) monday.setDate(monday.getDate() + 1);
+  const date = [
+    monday.getFullYear(),
+    String(monday.getMonth() + 1).padStart(2, '0'),
+    String(monday.getDate()).padStart(2, '0')
+  ].join('-');
+  const nextDay = new Date(monday);
+  nextDay.setDate(nextDay.getDate() + 1);
+  const saturday = new Date(monday);
+  saturday.setDate(saturday.getDate() + 5);
+  const saturdayDate = [
+    saturday.getFullYear(),
+    String(saturday.getMonth() + 1).padStart(2, '0'),
+    String(saturday.getDate()).padStart(2, '0')
+  ].join('-');
+  const sunday = new Date(monday);
+  sunday.setDate(sunday.getDate() + 6);
+  const sundayDate = [
+    sunday.getFullYear(),
+    String(sunday.getMonth() + 1).padStart(2, '0'),
+    String(sunday.getDate()).padStart(2, '0')
+  ].join('-');
+  const booking = {
+    name: 'Ana',
+    phone: '3001234567',
+    email: 'ana@example.com',
+    date,
+    time: '22:00',
+    durationHours: 2
+  };
+
+  sandbox.bookSlot(booking);
+  assert.equal(createdEvents.length, 1);
+  assert.equal(createdEvents[0].start.getHours(), 22);
+  assert.equal(createdEvents[0].end.getDate(), nextDay.getDate());
+  assert.equal(createdEvents[0].end.getHours(), 0);
+
+  const saturdayContext = createBookingContext();
+  saturdayContext.sandbox.bookSlot({ ...booking, date: saturdayDate });
+  assert.equal(saturdayContext.createdEvents.length, 1);
+
+  assert.throws(() => sandbox.bookSlot({ ...booking, time: '18:00' }), /no está dentro del periodo disponible/);
+  assert.throws(() => sandbox.bookSlot({ ...booking, time: '22:00', durationHours: 3 }), /no está dentro del periodo disponible/);
+  assert.throws(() => sandbox.bookSlot({ ...booking, date: sundayDate }), /no está dentro del periodo disponible/);
 });

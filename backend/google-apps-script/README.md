@@ -4,7 +4,7 @@ Este backend de Google Apps Script sirve una agenda personalizada y crea eventos
 
 ## Antes de publicar
 
-`Code.gs` está configurado con el horario que ya aparece en el sitio: lunes a sábado, de 9:00 a. m. a 9:00 p. m., en `America/Bogota`. Cada reserva debe durar al menos 2 horas; se pueden seleccionar duraciones mayores en incrementos de una hora hasta el cierre. No se exige anticipación mínima y se muestran fechas hasta 120 días adelante. Confirma que esas reglas representan el servicio real antes de desplegar. Se ajustan al inicio de `Code.gs`.
+`Code.gs` está configurado para ofrecer reservas de lunes a sábado, con inicio entre las 7:00 p. m. y las 10:00 p. m. y cierre a medianoche, en `America/Bogota`. La duración mínima es de 2 horas; se pueden seleccionar duraciones mayores en incrementos de una hora, siempre que terminen a más tardar a las 12:00 a. m. No se exige anticipación mínima y se muestran fechas hasta 120 días adelante. El horario se ajusta al inicio de `Code.gs`.
 
 La captura de configuración compartida confirma el ID del calendario principal. Ese ID puede usarse para que esta aplicación consulte disponibilidad y guarde reservas en el calendario principal, siempre que la cuenta propietaria autorice Apps Script.
 

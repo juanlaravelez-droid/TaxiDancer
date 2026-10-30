@@ -1,7 +1,7 @@
 const BOOKING = Object.freeze({
   calendarProperty: 'BOOKING_CALENDAR_ID',
-  openHour: 9,
-  closeHour: 21,
+  openHour: 19,
+  closeHour: 24,
   minimumDurationHours: 2,
   minimumNoticeHours: 0,
   bookingWindowDays: 120,
